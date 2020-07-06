@@ -1,0 +1,26 @@
+%% MATLAB LIVE SCRIPT
+%Sweep NCD Model
+
+%Input Parameters
+%alpha = 0.5;
+beta = 0.9;
+delta = 0.1;
+xi = 0.8;
+zeta = 0.5;
+gamma1 = 0.1;
+gamma2 = 0.08;
+sigma = 0.05;
+itnum = 100;
+
+%Define Sweep Parameter
+alpha = zeros(1,itnum);
+fin = zeros(1,itnum);
+
+%Compute Sweep
+for i=1:itnum
+    alpha(i) = (double(i)-1)/(itnum-1);
+    fin(i) = ncdfinalsize(alpha(i),beta,xi,delta,zeta,gamma1,gamma2);
+end
+
+Plot Results
+plot(alpha,fin)
