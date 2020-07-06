@@ -1,0 +1,9 @@
+function [dydt] = pfunction(t,y,alpha,beta,p,xi,zeta,gamma1,gamma2)
+
+dydt = zeros(4,1);
+N = sum(y);
+
+dydt(1) = (-beta/N)*((1-alpha*p)*(1-xi)*y(2)+(1-alpha*p)^2*y(3)).*y(1);
+dydt(2) = zeta*(beta/N)*((1-alpha*p)*(1-xi)*y(2)+(1-alpha*p)^2*y(3)).*y(1)-gamma1*y(2);
+dydt(3) = (1-zeta)*(beta/N)*((1-alpha*p)*(1-xi)*y(2)+(1-alpha*p)^2*y(3)).*y(1)-gamma2*y(3);
+dydt(4) = gamma1*y(2)+gamma2*y(3);
