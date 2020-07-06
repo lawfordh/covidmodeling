@@ -1,0 +1,27 @@
+%Numerically Solve NCD Model
+
+%Input Parameters
+alpha = 0.2
+beta = 0.2
+xi = 0.8
+zeta = 0.5
+gamma1 = 0.1
+gamma2 = 0.08
+delta = 0.1
+sigma = 0.05
+
+%Compute R0
+R0 = beta*zeta*(1-xi)*(1+alpha*sigma-alpha)/gamma1+beta*(1-zeta)*(1-sigma)*(1-alpha)^2/(sigma*delta+gamma2)+(beta/gamma2)*sigma*(1-zeta)*(1+delta*(1-alpha)*(1-sigma)/(sigma*delta+gamma2))
+otherR0 = zeta*beta*(1-xi)*(1-alpha)/gamma1+beta*(1-zeta)*(1-alpha)^2/gamma2
+
+%Input Initial Values and Time Range and Solve
+tspan = [0 400];
+y0 = double([95000,5000,100,92,8,0,0])
+%y0 = y0/sum(y0);
+[t,y] = ode45(@(t,y) ncdfunction(t,y,alpha,beta,xi,delta,zeta,gamma1,gamma2),tspan,y0);
+
+%Output Plots
+plot(t,y(:,3),t,y(:,4)+y(:,5))
+plot(t,y(:,3),t,y(:,4),t,y(:,5))
+plot(t,y(:,1),t,y(:,2))
+plot(t,y(:,2)+y(:,5)+y(:,7),t,y(:,1)+y(:,3)+y(:,4)+y(:,6))
