@@ -1,0 +1,13 @@
+function [dydt] = ncdfunction(t,y,alpha,beta,xi,delta,zeta,gamma1,gamma2)
+
+dydt = zeros(7,1);
+N = sum(y);
+N2 = y(2)+y(5)+y(7);
+
+dydt(1) = (-beta/N)*(1-alpha)*((1-xi)*y(3)+(1-alpha)*y(4)+y(5)).*y(1)-(delta/N)*N2.*y(1);
+dydt(2) = (-beta/N)*((1-xi)*y(3)+(1-alpha)*y(4)+y(5)).*y(2)+(delta/N)*N2.*y(1);
+dydt(3) = zeta*(beta/N)*((1-xi)*y(3)+(1-alpha)*y(4)+y(5)).*((1-alpha)*y(1)+y(2))-gamma1*y(3);
+dydt(4) = (1-zeta)*(beta/N)*(1-alpha)*((1-xi)*y(3)+(1-alpha)*y(4)+y(5)).*y(1)-(delta/N)*N2.*y(4)-gamma2*y(4);
+dydt(5) = (1-zeta)*(beta/N)*((1-xi)*y(3)+(1-alpha)*y(4)+y(5)).*y(2)+(delta/N)*N2.*y(4)-gamma2*y(5);
+dydt(6) = gamma1*y(3)+gamma2*y(4)-(delta/N)*N2.*y(6);
+dydt(7) = gamma2*y(5)+(delta/N)*N2.*y(6);
