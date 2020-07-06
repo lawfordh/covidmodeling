@@ -1,0 +1,21 @@
+%% MATLAB Live Script
+%Find Numerical Solution to Probability Model
+
+%Input Parameters
+alpha = 0.99;
+beta = 0.2;
+p = 0.2;
+xi = 0.8;
+zeta = 0.5;
+gamma1 = 0.1;
+gamma2 = 0.08;
+
+%Input Initial Values and Time Range and Solve
+tspan = [0,400];
+y0 = double([100000 100 100 0]);
+y0 = y0/sum(y0);
+[t,y] = ode45(@(t,y) pfunction(t,y,alpha,beta,p,xi,zeta,gamma1,gamma2),tspan,y0);
+
+%Output Plots
+plot(t,y(:,2),t,y(:,3))
+plot(t,y(:,1))
