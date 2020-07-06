@@ -1,0 +1,11 @@
+function [fin] = ncdfinalsize(alpha,beta,xi,delta,zeta,gamma1,gamma2)
+
+% Input Initial Values and Time Range and Solve
+tspan = [0 400];
+y0 = double([95000,5000,100,92,8,0,0]);
+y0 = y0/sum(y0);
+[t,y] = ode45(@(t,y) ncdfunction(t,y,alpha,beta,xi,delta,zeta,gamma1,gamma2),tspan,y0);
+
+% Output
+s = max(size(y));
+fin = y(s,1)+y(s,2);
