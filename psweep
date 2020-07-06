@@ -1,0 +1,36 @@
+%% MATLAB LIVE SCRIPT
+%% Must change code to fit whichever parameter is going to be swept
+%Sweep P-Model
+
+%Input Parameters
+alpha = 0.2;
+beta = 2.0;
+p = 0.85;
+%xi = 0.8;
+zeta = 0.5;
+gamma1 = 0.1;
+gamma2 = 0.08;
+itnum = 100;
+
+%Define Sweep Parameter
+xi = zeros(1,itnum);
+fin = zeros(1,itnum);
+fin1 = zeros(1,itnum);
+fin2 = zeros(1,itnum);
+
+%Compute Sweep
+for i=1:itnum
+    xi(i) = (i-1)/(itnum-1);
+    fin(i) = pfinalsize(alpha,beta,p,xi(i),zeta,gamma1,gamma2);
+    
+    R01 = zeta*beta*(1-xi(i))*(1-alpha*p)/gamma1+beta*(1-zeta)*(1-alpha*p)^2/gamma2;
+    syms S
+    fin1(i) = vpasolve(exp(-R01*(1-S))-S==0,S,0.0);
+end
+
+%Plot
+plot(xi,fin)
+plot(xi,fin1)
+xlabel('Xi')
+ylabel('S_{infty}')
+meanerror1 = mean(abs(fin-fin1))
