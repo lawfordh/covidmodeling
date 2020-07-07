@@ -1,0 +1,94 @@
+
+
+%% Author: L. Diego Galvan
+% Date: 06/07/20
+% SIAR NCD test script
+clear all
+close all
+
+%     function siar_ode45_test
+i=1;
+
+% for zeta = linspace(0,1,50)
+
+%pars order of input parameters
+    N =  105200; % number of total persons in the closed system
+    beta = 1; % infectivity rate
+    gamma1 = 0.1; % recovery rate for symptomatics
+    gamma2 = 0.08; % recovery rate for asymptomatics
+    alpha = 0.5; % government mandated lockdown
+    xi = 0.8; % portion of symptomatic people who isolate
+    zeta = 0.6; %probability an infected person is symptomatic
+    delta = 0.75; % transmission rate from compliant to non-compliant compartment
+    
+    %Values for testing proposition 2.2
+R1 = beta/(min(gamma1/(1-zeta),gamma2));
+R2 = beta*(1-alpha)/(max((gamma1/1-zeta),gamma2/(1-alpha)));
+
+    
+    pars=[N,beta,gamma1,gamma2,alpha,xi,zeta,delta]; %Parameter vector for ode45
+    tspan=[0,400]; % simulation time (in days)
+    y0=[100000;5000;100;92;8;0;0]; % S1; S2; I; A1; A2; R1; R2; (must sum to N on line15)
+%     y0=[95000;5000;0;0;0;0;0];
+    
+    sigma = y0(2)/y0(1);
+    
+    %Compute basic reproduction number
+    R01 = zeta*beta*(1-xi)*(1 + alpha*sigma - alpha)/gamma1 + sigma*beta*(1-zeta)/gamma2 + beta*(1-zeta)*(1-sigma)*(1-alpha)*(gamma2*(1-alpha) + sigma*delta)/(gamma2*(sigma*delta + gamma2));
+    
+    %use ode45 to solve the NCD model
+    [t,y] = ode45(@siar_NCD_rhs,tspan,y0,[],pars);
+    
+    N_suc = y0(1) + y0(2);
+    
+    %final normalized size S_{\infty}
+    final_size(i) = (y(length(t),1) + y(length(t),2))/N_suc;
+    
+    %values for testing proposition 2.2
+    bound1(i) = exp(-R1*(1-final_size(i)/N_suc));
+    bound2(i) = exp(-R2*(1-final_size(i)/N_suc));
+    
+    %Holder vectors if we want to make specific plots
+    
+    %         delta_holder(i) = delta;
+    %         xi_holder(i) = xi;
+    %     zeta_holder(i) = zeta;
+    %     gamma1_holder(i) = gamma1;
+    %     gamma2_holder(i) = gamma2;
+    %     beta_holder(i) = beta;
+    %         alpha_holder(i) = alpha;
+    i = i + 1;
+    
+%     end
+% subplot(2,2,1)
+% for i = 1:2
+%     plot(t,y(:,i)/N); %plot S1 S2
+%     hold on
+% end
+% hold off
+% subplot(2,2,2)
+% for i = 3:5
+%     plot(t,y(:,i)/N); %plot I A1 A2
+%     hold on
+%     ylim([0,0.002])
+% end
+% hold off
+% subplot(2,2,3)
+% for i = 6:7
+%     plot(t,y(:,i)/N); %plot R1 R2
+%     hold on
+% %     ylim([0,0.002])
+% end
+% legend('S1','S2','I','A1','A2','R1','R2');
+
+% end
+% plot(zeta_holder,final_size);
+% hold on
+% plot(zeta_holder,bound1);
+% hold on
+% plot(zeta_holder,bound2);
+% hold on
+% title('Proposition 2.2 test')
+% legend('Final Size S_{\infty} %','lower bound e^{(-R1(1-S_{\infty})}','upper bound e^{(-R2(1-S_{\infty})}')
+% xlabel('alpha')
+% ylabel('Values')
